@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Maybe not your typical use-case, but I develop I geographic information system using Ruby on Rails, and when I add a new geographic
+Maybe not your typical use-case, but I develop I geographic information systems using Ruby on Rails, and when I add a new geographic
 feature, I add an `ActiveRecord` migration which is automatically deployed on my development/test/quality assurance/production servers.
 
 However, keeping my geoserver configuration in sync is a different beast: I create and test the geoserver styles and layers on my development
@@ -44,4 +44,9 @@ Later we could add something like
 - define print-styles? is this possible through API?
 - maybe make it rails-independant? I can imagine people would want to manage geoserver migrations outside of rails?
 
+Practical:
+
+- I intend to use `HTTPClient` and my own (small) API library for now/for starting (because I use HTTPClient by preference)
+- there is a gem to consume geoserver API called [rgeoserver](https://github.com/sul-dlss/rgeoserver) but it uses `RestClient` instead
+  but it seems wise to use that instead? Maybe adapt it to use `Faraday` so people can use any underlying http-library they like?  
 
