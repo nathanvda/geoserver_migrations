@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.version     = GeoserverMigrations::VERSION
   s.authors     = ["'nathanvda'"]
   s.email       = ["'nathan@dixis.com'"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of GeoserverMigrations."
-  s.description = "TODO: Description of GeoserverMigrations."
+  s.homepage    = "https://github.com/nathanvda/geoserver_migrations"
+  s.summary     = "manage your geoserver configuration using migrations"
+  s.description = "Manage your geoserver configuration like you manage your database: with migrations"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 4.2.7"
 
   s.add_development_dependency "sqlite3"
+  # s.add_development_dependency "rake-version"
 end

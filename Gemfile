@@ -13,3 +13,5 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
+# gem 'rake-version', github: 'nathanvda/rake-version', branch: 'nathanvda-patch-1'
+gem 'rake-version', path: "../rake-version"
