@@ -15,8 +15,10 @@ RDoc::Task.new(:rdoc) do |rdoc|
 end
 
 
-
-
+require 'rake-version'
+RakeVersion::Tasks.new do |v|
+  v.copy 'lib/geoserver_migrations/version.rb'
+end
 
 
 Bundler::GemHelper.install_tasks
