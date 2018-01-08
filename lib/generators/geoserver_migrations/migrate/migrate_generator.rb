@@ -4,7 +4,9 @@ module GeoserverMigrations
       desc "Check and run the needed geoserver migrations"
 
       def run_migrations
-        puts "Run migrations ... "
+        migrator = GeoserverMigrations::Migrator.new
+        migrator.migrations_paths = GEOSERVER_MIGRATIONS_CONFIG[:migrations_path]
+        migrator.migrate
       end
 
     end
