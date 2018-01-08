@@ -1,6 +1,12 @@
+require 'geoserver_migrations/migration_proxy'
+require 'geoserver_migrations/migration'
+require 'geoserver_migrations/migrator'
+
+
 module GeoserverMigrations
 
   #define exceptions
+
   module ExceptionsMixin
     def initialize(str)
       super("GeoserverMigrations: " + str)
@@ -8,6 +14,17 @@ module GeoserverMigrations
   end
   class ArgumentError < ::ArgumentError #:nodoc:
     include ExceptionsMixin
+  end
+
+  class IllegalMigrationNameError < StandardError #:nodoc:
+    include ExceptionsMixin
+    def initialize(name = nil)
+      if name
+        super("Illegal name for migration file: #{name}\n\t(only lower case letters, numbers, and '_' allowed).")
+      else
+        super("Illegal name for migration.")
+      end
+    end
   end
 
   # class AccessDenied < ::StandardError #:nodoc:
