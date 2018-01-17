@@ -7,7 +7,7 @@ module GeoserverMigrations
       @name       = name
       @version    = version
       @connection = nil
-      @layer_to_create = {}
+      @layers_to_create = {}
     end
 
     def migrate
@@ -27,8 +27,10 @@ module GeoserverMigrations
 
 
     def create_layer(layer_name, &block)
-      layer_config = LayerConfig.new
+      layer_config = GeoserverMigrations::LayerConfig.new
       layer_config.instance_eval(&block) if block_given?
+      puts "Layer #{layer_name} :: #{layer_config.options.inspect}"
+      puts "Is valid? #{layer_config.valid?}"
       @layers_to_create[layer_name] = layer_config if layer_config.valid?
     end
 
