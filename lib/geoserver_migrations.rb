@@ -1,6 +1,9 @@
 require 'geoserver_migrations/migration_proxy'
 require 'geoserver_migrations/migration'
 require 'geoserver_migrations/migrator'
+require 'geoserver_migrations/base'
+require 'geoserver_migrations/test_connector'
+require 'geoserver_migrations/api_connector'
 require 'geoserver_migrations/layer_config'
 
 
