@@ -18,8 +18,10 @@ module GeoserverMigrations
         # collect configuration
         run
 
+        # puts @layers_to_create.inspect
+
         # create configured layers
-        puts @layers_to_create.inspect
+        GeoserverMigrations::Base.connection.execute(@layers_to_create)
       end
 
       announce "migrated (%.4fs)" % time.real; write
@@ -27,15 +29,13 @@ module GeoserverMigrations
 
 
     def create_layer(layer_name, &block)
-      layer_config = GeoserverMigrations::LayerConfig.new
+      layer_config = GeoserverMigrations::LayerConfig.new(layer_name)
       layer_config.instance_eval(&block) if block_given?
-      puts "Layer #{layer_name} :: #{layer_config.options.inspect}"
-      puts "Is valid? #{layer_config.valid?}"
       @layers_to_create[layer_name] = layer_config if layer_config.valid?
     end
 
     def write(text = "")
-      puts(text) #if verbose
+      puts(text) unless Rails.env.test? 
     end
 
     def announce(message)
@@ -57,7 +57,5 @@ module GeoserverMigrations
       result
     end
 
-    
-    
   end
 end

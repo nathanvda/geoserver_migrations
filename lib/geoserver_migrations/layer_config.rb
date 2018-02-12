@@ -4,8 +4,10 @@ module GeoserverMigrations
     # attr_writer :sld, :layer_name, :feature_name, :style_name
     attr_accessor :options
 
-    def initialize
-      @options = {}
+    def initialize(layer_name)
+      @options = {
+          layer_name: layer_name
+      }
     end
     
     def valid?
@@ -13,8 +15,9 @@ module GeoserverMigrations
       options[:feature_name].present?
     end
 
+
     def method_missing(method,*args,&block)
-      puts "LayerConfig method-missing: #{method.inspect}, #{args.inspect}"
+      # puts "LayerConfig method-missing: #{method.inspect}, #{args.inspect}"
       if [:sld, :layer_name, :feature_name, :style_name].include? method.to_sym
         if args.size > 0
           value = args.size == 1 ? args.first : args

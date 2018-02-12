@@ -1,8 +1,8 @@
 development: &common
   # define migrations_path if you want to keep your migrations in a different folder
   # migrations_path: 'geoserver/migrate'
-  geoserver_base: "http://localhost:8080/geoserver"
   api:
+    base: "http://localhost:8080/geoserver/rest"
     user: admin
     password: geoserver
 

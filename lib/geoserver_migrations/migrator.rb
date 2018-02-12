@@ -13,6 +13,7 @@ module GeoserverMigrations
         else
           pending_migrations.each do |migration|
             migration.migrate
+            
             GeoServerMigration.set_migrated(migration)
           end
         end
