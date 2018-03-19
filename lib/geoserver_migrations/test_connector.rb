@@ -7,8 +7,8 @@ module GeoserverMigrations
       @collected_actions = {}
     end
 
-    def execute(layer_configs, options={})
-      collected_actions.merge!(layer_configs)
+    def execute(layer_configs, direction=:up, options={})
+      collected_actions.merge!(direction => layer_configs)
     end
 
   end

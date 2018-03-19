@@ -66,7 +66,7 @@ RSpec.describe GeoserverMigrations::Migrator do
           @first_migration.migrate
         end
         it "has collected the layers" do
-          expect(@test_connector.collected_actions.keys.sort).to eq([:settlement_gauges, :welds])
+          expect(@test_connector.collected_actions[:up].keys.sort).to eq([:settlement_gauges, :welds])
         end
         # it "stores two layers" do
         #   expect(@first_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:settlement_gauges, :welds])
@@ -99,6 +99,17 @@ RSpec.describe GeoserverMigrations::Migrator do
         #     expect(@settlement_gauges.feature_name).to eq(:settlement_gauges)
         #   end
         # end
+        it "stores two layers" do
+          expect(@first_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:settlement_gauges, :welds])
+        end
+      end
+      context "rolling back" do
+        before do
+          @first_migration.migrate(:down)
+        end
+        it "has collected the layers" do
+          expect(@test_connector.collected_actions[:down].keys.sort).to eq([:settlement_gauges, :welds])
+        end
         it "stores two layers" do
           expect(@first_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:settlement_gauges, :welds])
         end

@@ -21,6 +21,19 @@ module GeoserverMigrations
     end
 
 
+    def rollback(steps=1)
+      if steps < 1
+        puts "The nr of steps to rollback has to be at least 1"
+      else
+        rollback_migrations(steps).each do |migration|
+          migration.migrate(:down)
+
+          GeoServerMigration.set_reverted(migration)
+        end
+      end
+    end
+
+
 
     def get_all_versions
       begin
@@ -40,6 +53,13 @@ module GeoserverMigrations
 
     def any_migrations?
       migrations(migrations_paths).any?
+    end
+
+
+    def rollback_migrations(steps=1)
+      to_rollback = get_all_versions[0 - steps .. -1]
+      migrations = migrations(migrations_paths)
+      migrations.select { |m| to_rollback.include?(m.version) }
     end
 
     def pending_migrations

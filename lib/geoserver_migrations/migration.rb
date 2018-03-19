@@ -10,10 +10,14 @@ module GeoserverMigrations
       @layers_to_create = {}
     end
 
-    def migrate
-      announce "migrating"
+    def migrate(direction = :up)
+      return unless [:up, :down].include?(direction)
 
-      time = nil
+      case direction
+        when :up   then announce "migrating"
+        when :down then announce "reverting"
+      end
+
       time = Benchmark.measure do
         # collect configuration
         run
@@ -21,10 +25,11 @@ module GeoserverMigrations
         # puts @layers_to_create.inspect
 
         # create configured layers
-        GeoserverMigrations::Base.connection.execute(@layers_to_create)
+        GeoserverMigrations::Base.connection.execute(@layers_to_create, direction)
       end
 
-      announce "migrated (%.4fs)" % time.real; write
+      operation = direction == :up ? 'migrated' : 'reverted'
+      announce "#{operation} (%.4fs)" % time.real; write
     end
 
 
