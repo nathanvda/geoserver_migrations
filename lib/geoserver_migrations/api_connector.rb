@@ -6,6 +6,9 @@ module GeoserverMigrations
       GeoserverClient.api_root = GEOSERVER_MIGRATIONS_CONFIG[:api][:base]
       GeoserverClient.api_user = GEOSERVER_MIGRATIONS_CONFIG[:api][:user]
       GeoserverClient.api_password = GEOSERVER_MIGRATIONS_CONFIG[:api][:password]
+
+      GeoserverClient.workspace    = GEOSERVER_MIGRATIONS_CONFIG[:workspace]
+      GeoserverClient.datastore    = GEOSERVER_MIGRATIONS_CONFIG[:datastore]
     end
 
     def execute(layer_configs, direction = :up, options={})

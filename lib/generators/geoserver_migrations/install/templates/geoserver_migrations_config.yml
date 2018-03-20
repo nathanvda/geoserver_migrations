@@ -5,6 +5,8 @@ development: &common
   api:
     user: admin
     password: geoserver
+  workspace: your-workspace
+  datastore: your-datastore
 
 test:
   <<: *common   # merges key:value pairs defined in development anchor
