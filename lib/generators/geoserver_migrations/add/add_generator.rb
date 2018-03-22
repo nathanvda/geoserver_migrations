@@ -9,10 +9,7 @@ module GeoserverMigrations
         migration_name = file_name.underscore
         class_name = file_name.camelize
 
-        migrations_rootpath = GEOSERVER_MIGRATIONS_CONFIG[:migrations_path]
-        migrations_rootpath ||= 'geoserver/migrate'
-
-        create_file File.join(Rails.root, migrations_rootpath, "#{migration_name}.rb"), <<-MIGRATION_FILE
+        create_file File.join(Rails.root, GeoserverMigrations.migrations_rootpath, "#{Time.now.strftime('%Y%m%d%H%M%S')}_#{migration_name}.rb"), <<-MIGRATION_FILE
 class #{class_name} < GeoserverMigrations::Migration
 
   def run 
