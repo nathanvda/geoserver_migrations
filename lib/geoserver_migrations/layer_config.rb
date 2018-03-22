@@ -15,6 +15,9 @@ module GeoserverMigrations
       options[:feature_name].present?
     end
 
+    def style_name
+      @options[:style_name] || @options[:layer_name]
+    end
 
     def method_missing(method,*args,&block)
       # puts "LayerConfig method-missing: #{method.inspect}, #{args.inspect}"
