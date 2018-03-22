@@ -3,9 +3,9 @@ module GeoserverMigrations
 
     def initialize
       # initialise geoserver-client
-      GeoserverClient.api_root = GEOSERVER_MIGRATIONS_CONFIG[:api][:base]
-      GeoserverClient.api_user = GEOSERVER_MIGRATIONS_CONFIG[:api][:user]
-      GeoserverClient.api_password = GEOSERVER_MIGRATIONS_CONFIG[:api][:password]
+      GeoserverClient.api_root = ::GEOSERVER_MIGRATIONS_CONFIG[:geoserver_base]
+      GeoserverClient.api_user = ::GEOSERVER_MIGRATIONS_CONFIG[:api][:user]
+      GeoserverClient.api_password = ::GEOSERVER_MIGRATIONS_CONFIG[:api][:password]
 
       GeoserverClient.workspace    = GEOSERVER_MIGRATIONS_CONFIG[:workspace]
       GeoserverClient.datastore    = GEOSERVER_MIGRATIONS_CONFIG[:datastore]
@@ -23,8 +23,8 @@ module GeoserverMigrations
             GeoserverClient.create_style layer_config.style_name, sld: layer_config.sld
           end
 
-          puts " -- Create layer #{layer_config.layer_name}"
-          GeoserverClient.create_featuretype layer_name, style_name: layer_config.style_name, native_name: layer_config.feature_type
+          puts " -- Create layer #{layer_config.layer_name} [native_name = #{layer_config.feature_name}]"
+          GeoserverClient.create_featuretype layer_name, style_name: layer_config.style_name, native_name: layer_config.feature_name
         else
           if !layer_config.sld.nil?
             puts " -- delete style #{layer_config.style_name}"
