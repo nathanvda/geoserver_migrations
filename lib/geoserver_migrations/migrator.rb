@@ -8,7 +8,7 @@ module GeoserverMigrations
       if !any_migrations?
         puts "No migration files found!"
       else
-        if !pending_migrations?
+        if !needs_migration?
           puts "There are no pending migrations."
         else
           pending_migrations.each do |migration|
