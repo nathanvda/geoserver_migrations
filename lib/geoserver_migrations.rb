@@ -31,6 +31,11 @@ module GeoserverMigrations
     end
   end
 
+
+  def self.migrations_rootpath
+    (!GEOSERVER_MIGRATIONS_CONFIG.nil? && GEOSERVER_MIGRATIONS_CONFIG[:migrations_path]) || 'geoserver/migrate'
+  end
+
   # class AccessDenied < ::StandardError #:nodoc:
   #   include ExceptionsMixin
   #   def initialize(str='Access denied: you do not have the right permissions for the requested action.')
