@@ -59,7 +59,7 @@ module GeoserverMigrations
       if File.exist?(geoserver_config_file)
         Rails.logger.debug "define GEOSERVER_MIGRATIONS_CONFIG"
         raw_config = File.read(geoserver_config_file)
-        ::GEOSERVER_MIGRATIONS_CONFIG = YAML.load(raw_config)["#{Rails.env}"]
+        ::GEOSERVER_MIGRATIONS_CONFIG = YAML.load(raw_config)["#{Rails.env}"].with_indifferent_access
       # else
       #   raise GeoserverMigrations::ArgumentError.new("The geoserver_migrations_config.yml is missing. Path=#{geoserver_config_file} Did you run the generator geoserver_migrations:install? ")
       end
