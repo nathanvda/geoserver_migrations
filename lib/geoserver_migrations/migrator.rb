@@ -14,7 +14,7 @@ module GeoserverMigrations
           pending_migrations.each do |migration|
             migration.migrate
             
-            GeoServerMigration.set_migrated(migration)
+            GeoserverMigration.set_migrated(migration)
           end
         end
       end
@@ -28,7 +28,7 @@ module GeoserverMigrations
         rollback_migrations(steps).each do |migration|
           migration.migrate(:down)
 
-          GeoServerMigration.set_reverted(migration)
+          GeoserverMigration.set_reverted(migration)
         end
       end
     end
