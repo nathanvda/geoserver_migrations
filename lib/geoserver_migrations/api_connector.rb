@@ -24,7 +24,8 @@ module GeoserverMigrations
           end
 
           puts " -- Create layer #{layer_config.layer_name} [native_name = #{layer_config.feature_name}]"
-          GeoserverClient.create_featuretype layer_name, style_name: layer_config.style_name, native_name: layer_config.feature_name
+          GeoserverClient.create_featuretype layer_name, native_name: layer_config.feature_name
+          GeoserverClient.set_layer_style layer_name, layer_config.style_name
         else
           if !layer_config.sld.nil?
             puts " -- delete style #{layer_config.style_name}"
