@@ -15,8 +15,12 @@ module GeoserverMigrations
       options[:feature_name].present?
     end
 
-    def style_name
-      @options[:style_name] || @options[:layer_name]
+    def style_name(style_name=nil)
+      if style_name.nil?
+        @options[:style_name] || @options[:layer_name]
+      else
+        @options[:style_name] = style_name
+      end   
     end
 
     def method_missing(method,*args,&block)

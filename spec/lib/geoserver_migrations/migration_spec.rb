@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'fixtures/migrate_examples/migrate_1/01_first_migration'
 
-RSpec.describe GeoserverMigrations::Migrator do
+RSpec.describe GeoserverMigrations::Migration do
 
   context "running our first migration" do
     context "it collects the layers to be created" do
@@ -36,8 +36,8 @@ RSpec.describe GeoserverMigrations::Migrator do
           it "has an sld" do
             expect(@settlement_gauges.sld).to eq("this is a test")
           end
-          it "has an style-name" do
-            expect(@settlement_gauges.style_name).to be nil
+          it "returns the layer-name as style-name" do
+            expect(@settlement_gauges.style_name).to eq(:settlement_gauges)
           end
           it "has an feature-name" do
             expect(@settlement_gauges.feature_name).to eq(:settlement_gauges)
