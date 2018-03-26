@@ -39,5 +39,10 @@ module GeoserverMigrations
       end
     end
 
+    def test
+      layers = GeoserverClient.layers
+      layers["featureTypes"]["featureType"].map{|l| l["name"]}
+    end
+
   end
 end
