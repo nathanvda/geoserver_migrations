@@ -33,7 +33,11 @@ module GeoserverMigrations
 
 
   def self.migrations_rootpath
-    (!GEOSERVER_MIGRATIONS_CONFIG.nil? && GEOSERVER_MIGRATIONS_CONFIG[:migrations_path]) || 'geoserver/migrate'
+    (!GeoserverMigrations.config.nil? && GeoserverMigrations.config[:migrations_path]) || 'geoserver/migrate'
+  end
+
+  def self.config
+    ::GEOSERVER_MIGRATIONS_CONFIG
   end
 
   # class AccessDenied < ::StandardError #:nodoc:

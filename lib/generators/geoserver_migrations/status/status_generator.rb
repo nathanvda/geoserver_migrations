@@ -6,12 +6,12 @@ module GeoserverMigrations
       def check_status
         puts "Checking configuration ... "
         errors = []
-        errors << "geoserver_base is not set" unless GEOSERVER_MIGRATIONS_CONFIG[:geoserver_base].present?
-        errors << "api-user is not set" unless GEOSERVER_MIGRATIONS_CONFIG[:api][:user].present?
-        errors << "api-password is not set" unless GEOSERVER_MIGRATIONS_CONFIG[:api][:password].present?
+        errors << "geoserver_base is not set" unless GeoserverMigrations.config[:geoserver_base].present?
+        errors << "api-user is not set" unless       GeoserverMigrations.config[:api][:user].present?
+        errors << "api-password is not set" unless GeoserverMigrations.config[:api][:password].present?
 
-        errors << "Geoserver workspace is not set" unless GEOSERVER_MIGRATIONS_CONFIG[:workspace].present?
-        errors << "Geoserver datastore is not set" unless GEOSERVER_MIGRATIONS_CONFIG[:datastore].present?
+        errors << "Geoserver workspace is not set" unless GeoserverMigrations.config[:workspace].present?
+        errors << "Geoserver datastore is not set" unless GeoserverMigrations.config[:datastore].present?
 
         unless errors.count > 0
           puts " --> Configuration ok"
