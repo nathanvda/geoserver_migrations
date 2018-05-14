@@ -20,7 +20,7 @@ RSpec.describe GeoserverMigrations::Migration do
             @welds = @first_migration.instance_variable_get("@layers_to_create")[:welds]
           end
           it "has set options" do
-            expect(@welds.options.inspect).to eq("{:layer_name=>:welds, :style_name=>:welds, :feature_name=>:welds}")
+            expect(@welds.options.inspect).to eq("{:layer_name=>:welds, :is_update_style=>false, :style_name=>:welds, :feature_name=>:welds}")
           end
           it "has an sld" do
             expect(@welds.style_name).to eq(:welds)
@@ -31,7 +31,7 @@ RSpec.describe GeoserverMigrations::Migration do
             @settlement_gauges = @first_migration.instance_variable_get("@layers_to_create")[:settlement_gauges]
           end
           it "has set options" do
-            expect(@settlement_gauges.options.inspect).to eq("{:layer_name=>:settlement_gauges, :sld=>\"this is a test\", :feature_name=>:settlement_gauges}")
+            expect(@settlement_gauges.options.inspect).to eq("{:layer_name=>:settlement_gauges, :is_update_style=>false, :sld=>\"this is a test\", :feature_name=>:settlement_gauges}")
           end
           it "has an sld" do
             expect(@settlement_gauges.sld).to eq("this is a test")
@@ -66,7 +66,7 @@ RSpec.describe GeoserverMigrations::Migration do
           @first_migration.migrate
         end
         it "has collected the layers" do
-          expect(@test_connector.collected_actions[:up].keys.sort).to eq([:settlement_gauges, :welds])
+          expect(@test_connector.collected_actions[:up].map{|x| x[:params][:name]}.sort).to eq([:settlement_gauges, :welds])
         end
         # it "stores two layers" do
         #   expect(@first_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:settlement_gauges, :welds])
@@ -108,7 +108,7 @@ RSpec.describe GeoserverMigrations::Migration do
           @first_migration.migrate(:down)
         end
         it "has collected the layers" do
-          expect(@test_connector.collected_actions[:down].keys.sort).to eq([:settlement_gauges, :welds])
+          expect(@test_connector.collected_actions[:down].map{|x| x[:params][:name]}.sort).to eq([:settlement_gauges, :welds])
         end
         it "stores two layers" do
           expect(@first_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:settlement_gauges, :welds])

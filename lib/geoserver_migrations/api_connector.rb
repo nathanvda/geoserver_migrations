@@ -9,32 +9,62 @@ module GeoserverMigrations
 
       GeoserverClient.workspace    = GEOSERVER_MIGRATIONS_CONFIG[:workspace]
       GeoserverClient.datastore    = GEOSERVER_MIGRATIONS_CONFIG[:datastore]
+      # if Rails.present?
+      #   GeoserverClient.logger = Rails.logger
+      # end
+      GeoserverClient.logger = :stdout 
     end
 
-    def execute(layer_configs, direction = :up, options={})
-      layer_configs.each do |layer_name, layer_config|
-        #layer_options = layer_config.options
-        #
-        if direction == :up
-          # explicitly create style if sld given
-          if !layer_config.sld.nil?
-            puts " -- Create style #{layer_config.style_name}"
+    def execute(ordered_actions, direction = :up, options={})
+      ordered_actions.each do |action_to_complete|
+        case action_to_complete[:action]
+          when :create_layer
+            layer_name = action_to_complete[:params][:name]
+            layer_config = action_to_complete[:params][:layer_config]
+            if direction == :up
+              # explicitly create style if sld given
+              if !layer_config.sld.nil?
+                puts " -- Create style #{layer_config.style_name}"
 
-            GeoserverClient.create_style layer_config.style_name, sld: layer_config.sld
-          end
+                GeoserverClient.create_style layer_config.style_name, sld: layer_config.sld
+              end
 
-          puts " -- Create layer #{layer_config.layer_name} [native_name = #{layer_config.feature_name}]"
-          GeoserverClient.create_featuretype layer_name, native_name: layer_config.feature_name
-          GeoserverClient.set_layer_style layer_name, layer_config.style_name
-        else
-          if !layer_config.sld.nil?
-            puts " -- delete style #{layer_config.style_name}"
+              puts " -- Create layer #{layer_config.layer_name} [native_name = #{layer_config.feature_name}]"
+              GeoserverClient.create_featuretype layer_name, native_name: layer_config.feature_name
+              GeoserverClient.set_layer_style layer_name, layer_config.style_name
+            else
+              if !layer_config.sld.nil?
+                puts " -- delete style #{layer_config.style_name}"
 
-            GeoserverClient.delete_style layer_config.style_name
-          end
+                GeoserverClient.delete_style layer_config.style_name
+              end
 
-          puts " -- delete layer #{layer_config.layer_name}"
-          GeoserverClient.delete_featuretype layer_name
+              puts " -- delete layer #{layer_config.layer_name}"
+              GeoserverClient.delete_featuretype layer_name
+            end
+          when :delete_layer
+            if direction == :up
+              layer_name = action_to_complete[:params][:name]
+              puts " -- Delete layer #{layer_name}"
+              GeoserverClient.delete_layer layer_name
+            else
+              # do nothing??
+              # we should save the layer-definition in the :up direction so we can
+              # restore it if needed?
+            end
+          when :delete_style
+            if direction == :up
+              style_name = action_to_complete[:params][:name]
+              puts " -- Delete style #{style_name}"
+              GeoserverClient.delete_layer style_name
+            end
+          when :update_style
+            if direction == :up
+              style_name = action_to_complete[:params][:name]
+              layer_config = action_to_complete[:params][:layer_config]
+              puts " -- Updating style #{style_name}"
+              GeoserverClient.update_style style_name, sld: layer_config.sld
+            end
         end
       end
     end

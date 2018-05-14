@@ -8,6 +8,9 @@ module GeoserverMigrations
       @version    = version
       @connection = nil
       @layers_to_create = {}
+      @layers_to_delete = []
+      @styles_to_delete = []
+      @ordered_actions_to_take = []
     end
 
     def migrate(direction = :up)
@@ -25,18 +28,38 @@ module GeoserverMigrations
         # puts @layers_to_create.inspect
 
         # create configured layers
-        GeoserverMigrations::Base.connection.execute(@layers_to_create, direction)
+        GeoserverMigrations::Base.connection.execute(@ordered_actions_to_take, direction)
       end
 
       operation = direction == :up ? 'migrated' : 'reverted'
       announce "#{operation} (%.4fs)" % time.real; write
     end
 
-
     def create_layer(layer_name, &block)
       layer_config = GeoserverMigrations::LayerConfig.new(layer_name)
       layer_config.instance_eval(&block) if block_given?
-      @layers_to_create[layer_name] = layer_config if layer_config.valid?
+      if layer_config.valid?
+        @layers_to_create[layer_name] = layer_config
+        @ordered_actions_to_take << {action: :create_layer, params: {name: layer_name, layer_config: layer_config}}
+      end
+    end
+
+    def update_style(layer_name, &block)
+      layer_config = GeoserverMigrations::LayerConfig.new(layer_name, true)
+      layer_config.instance_eval(&block) if block_given?
+      if layer_config.valid?
+        @ordered_actions_to_take << {action: :update_style, params: {name: layer_name, layer_config: layer_config}}
+      end
+    end
+
+    def delete_layer(layer_name)
+      @layers_to_delete << layer_name
+      @ordered_actions_to_take << {action: :delete_layer, params: {name: layer_name }}
+    end
+
+    def delete_style(style_name)
+      @styles_to_delete << style_name
+      @ordered_actions_to_take << {action: :delete_style, params: {name: style_name }}
     end
 
     def write(text = "")
