@@ -4,15 +4,17 @@ module GeoserverMigrations
     # attr_writer :sld, :layer_name, :feature_name, :style_name
     attr_accessor :options
 
-    def initialize(layer_name)
+    def initialize(layer_name, is_update_style=false)
       @options = {
-          layer_name: layer_name
+          layer_name: layer_name,
+          is_update_style: is_update_style
       }
+
     end
     
     def valid?
       # at least feature-name should be present?
-      options[:feature_name].present?
+      options[:feature_name].present? || (options[:is_update_style] && options[:sld].present?)
     end
 
     def style_name(style_name=nil)
