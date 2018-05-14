@@ -11,7 +11,7 @@ class GeoserverMigration < ActiveRecord::Base
   end
 
   def self.set_reverted(migration)
-    self.where(version: migration.version.to_s).destroy
+    self.where(version: migration.version.to_s).destroy_all
   end
 
   def version
