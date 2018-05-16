@@ -46,7 +46,7 @@ module GeoserverMigrations
             if direction == :up
               layer_name = action_to_complete[:params][:name]
               puts " -- Delete layer #{layer_name}"
-              GeoserverClient.delete_layer layer_name
+              GeoserverClient.delete_featuretype layer_name
             else
               # do nothing??
               # we should save the layer-definition in the :up direction so we can
@@ -56,7 +56,7 @@ module GeoserverMigrations
             if direction == :up
               style_name = action_to_complete[:params][:name]
               puts " -- Delete style #{style_name}"
-              GeoserverClient.delete_layer style_name
+              GeoserverClient.delete_style style_name
             end
           when :update_style
             if direction == :up
