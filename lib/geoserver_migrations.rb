@@ -36,6 +36,10 @@ module GeoserverMigrations
     (!GeoserverMigrations.config.nil? && GeoserverMigrations.config[:migrations_path]) || 'geoserver/migrate'
   end
 
+  def self.assets_path
+    "#{self.migrations_rootpath}/assets"
+  end
+
   def self.config
     ::GEOSERVER_MIGRATIONS_CONFIG
   end

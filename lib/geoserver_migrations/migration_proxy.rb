@@ -17,6 +17,7 @@ module GeoserverMigrations
     end
 
     delegate :migrate, to: :migration
+    delegate :assets_path=, to: :migration
 
     private
 

@@ -12,6 +12,7 @@ module GeoserverMigrations
           puts "There are no pending migrations."
         else
           pending_migrations.each do |migration|
+            migration.assets_path = GeoserverMigrations.assets_path
             migration.migrate
             
             GeoserverMigration.set_migrated(migration)
@@ -26,6 +27,7 @@ module GeoserverMigrations
         puts "The nr of steps to rollback has to be at least 1"
       else
         rollback_migrations(steps).each do |migration|
+          migration.assets_path = GeoserverMigrations.assets_path
           migration.migrate(:down)
 
           GeoserverMigration.set_reverted(migration)

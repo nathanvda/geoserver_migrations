@@ -18,6 +18,13 @@ module GeoserverMigrations
     def execute(ordered_actions, direction = :up, options={})
       ordered_actions.each do |action_to_complete|
         case action_to_complete[:action]
+          when :add_resource
+            file_name = action_to_complete[:params][:name]
+            if direction == :up
+              GeoserverClient.create_resource file_name
+            else
+              GeoserverClient.delete_resource file_name
+            end
           when :create_layer
             layer_name = action_to_complete[:params][:name]
             layer_config = action_to_complete[:params][:layer_config]

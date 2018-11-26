@@ -12,6 +12,7 @@ module GeoserverMigrations
       def create_migrations_folder
         # empty_directory "geoserver", "migrate"
         empty_directory "geoserver/migrate"
+        empty_directory "geoserver/migrate/assets"
       end
 
     end

@@ -1,7 +1,7 @@
 module GeoserverMigrations
   class Migration
 
-    attr_accessor :name, :version
+    attr_accessor :name, :version, :assets_path
 
     def initialize(name = self.class.name, version = nil)
       @name       = name
@@ -11,6 +11,7 @@ module GeoserverMigrations
       @layers_to_delete = []
       @styles_to_delete = []
       @ordered_actions_to_take = []
+      @assets_path = nil
     end
 
     def migrate(direction = :up)
@@ -33,6 +34,17 @@ module GeoserverMigrations
 
       operation = direction == :up ? 'migrated' : 'reverted'
       announce "#{operation} (%.4fs)" % time.real; write
+    end
+
+
+    def add_resource(resource_name)
+      # translate to full file-name and raise error if not exists?
+
+      full_resource_name = File.join(File.expand_path(self.assets_path), resource_name )
+
+      raise StandardError.new("File #{full_resource_name} not found!") unless File.exists?(full_resource_name)
+
+      @ordered_actions_to_take << {action: :add_resource, params: {name: full_resource_name }}
     end
 
     def create_layer(layer_name, &block)
@@ -84,6 +96,8 @@ module GeoserverMigrations
       say("#{result} rows", :subitem) if result.is_a?(Integer)
       result
     end
+
+    
 
   end
 end

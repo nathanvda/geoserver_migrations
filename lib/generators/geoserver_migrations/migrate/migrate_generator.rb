@@ -6,6 +6,7 @@ module GeoserverMigrations
       def run_migrations
         migrator = GeoserverMigrations::Migrator.new
         migrator.migrations_paths = GeoserverMigrations.migrations_rootpath
+        migrator.migrations_paths = GeoserverMigrations.migrations_rootpath
         migrator.migrate
       end
 

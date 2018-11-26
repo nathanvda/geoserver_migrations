@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'fixtures/migrate_examples/migrate_1/01_first_migration'
+require 'fixtures/migrate_examples/migrate_with_icon/05_add_icon'
 
 RSpec.describe GeoserverMigrations::Migration do
 
@@ -117,4 +118,41 @@ RSpec.describe GeoserverMigrations::Migration do
     end
   end
 
+  context "adding a resource" do
+    before do
+      @icon_migration = AddIcon.new
+    end
+    context "with incorrect settings or missing assets" do
+      before do
+        @icon_migration.asset_path = 'spec/fixtures/migrate_examples/migrate_with_icon/assets_NOT'
+      end
+      it "will raise an exception" do
+        expect {
+          @icon_migration.run
+        }.to raise_error(StandardError)
+        # }.to raise_error(StandardError, "File /Users/nathan/work/git/geoserver_migrations/spec/fixtures/migrate_examples/migrate_with_icon/assets_NOT/deer.png not found!")
+      end
+    end
+
+    context "it will collect the actions to add resources" do
+      before do
+        @icon_migration.asset_path = 'spec/fixtures/migrate_examples/migrate_with_icon/assets'
+        @icon_migration.run
+      end
+      it "has added 1 action to take" do
+        expect(@icon_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(1)
+      end
+      context "the added action" do
+        before do
+          @add_icon_action = @icon_migration.instance_variable_get('@ordered_actions_to_take').first
+        end
+        it "has the correct action-type" do
+          expect(@add_icon_action[:action]).to eq(:add_resource)
+        end
+        it "has the correct name as param" do
+          expect(@add_icon_action[:params][:name]).to end_with("spec/fixtures/migrate_examples/migrate_with_icon/assets/deer.png")
+        end
+      end
+    end
+  end
 end

@@ -64,6 +64,8 @@ In a migration we intend to create a new layer, linked to a database feature.
 We assume that the workspaces and datastores are already setup in your geoserver.
 
 
+    add_resource "some_icon.png"
+
     create_layer :welds do
       style_name :welds
       feature_name :welds
@@ -78,6 +80,9 @@ We assume that the workspaces and datastores are already setup in your geoserver
     end
 
 
+
+The `add_resource` will look for the given file in `$RAILS/geoserver/migrate/assets` and upload to geoserver,
+so you can reference it in later defined styles (SLD).
 
 
 ## Roadmap
