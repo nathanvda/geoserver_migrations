@@ -49,3 +49,5 @@ RSpec.configure do |config|
   #   load(seed_file)
   # end
 end
+
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }

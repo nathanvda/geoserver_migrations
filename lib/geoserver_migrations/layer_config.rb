@@ -1,3 +1,5 @@
+require 'geoserver_migrations/sld_helpers'
+
 module GeoserverMigrations
   class LayerConfig
 
@@ -11,6 +13,8 @@ module GeoserverMigrations
       }
 
     end
+
+    include GeoserverMigrations::SldHelpers 
     
     def valid?
       # at least feature-name should be present?
