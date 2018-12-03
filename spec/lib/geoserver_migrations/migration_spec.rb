@@ -169,13 +169,13 @@ RSpec.describe GeoserverMigrations::Migration do
         @sld_helper_migration.run
       end
       it "stores two layers" do
-        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :deers])
+        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :deers, :moose])
       end
       it "has added 3 action to take (2 layers and 1 icon)" do
-        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(3)
+        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(4)
       end
 
-      context "the welds layer" do
+      context "the alt-deers layer" do
         before do
           @alt_deers = @sld_helper_migration.instance_variable_get("@layers_to_create")[:alt_deers]
         end
@@ -260,7 +260,7 @@ RSpec.describe GeoserverMigrations::Migration do
           expect(@alt_deers.sld).to match_fuzzy(sld_with_filter)
         end
       end
-      context "the settlement-gauges layer" do
+      context "the deers layer" do
         before do
           @deers = @sld_helper_migration.instance_variable_get("@layers_to_create")[:deers]
         end
@@ -346,6 +346,62 @@ RSpec.describe GeoserverMigrations::Migration do
         end
         it "has an feature-name" do
           expect(@deers.feature_name).to eq(:deers)
+        end
+      end
+      context "the moose layer" do
+        before do
+          @moose = @sld_helper_migration.instance_variable_get("@layers_to_create")[:moose]
+        end
+        it "has set layer-name" do
+          expect(@moose.layer_name).to eq(:moose)
+        end
+        it "has set the style-name" do
+          expect(@moose.style_name).to eq(:moose)
+        end
+        it "has set the feature-name" do
+          expect(@moose.style_name).to eq(:moose)
+        end
+        it "has an sld" do
+          resulting_sld = <<-SLD.strip_heredoc
+            <?xml version="1.0" encoding="ISO-8859-1"?>
+            <StyledLayerDescriptor version="1.0.0"
+              xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+              xmlns="http://www.opengis.net/sld"
+              xmlns:ogc="http://www.opengis.net/ogc"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <NamedLayer>
+                <Name>MOOSE</Name>
+                <UserStyle>
+                  <Name>MOOSE</Name>
+                  <Title>MOOSE</Title>
+                  <Abstract>MOOSE</Abstract>
+                  <FeatureTypeStyle>
+                    <Rule>
+                      <Title>ELANDEN</Title>
+                      <MaxScaleDenominator>15000</MaxScaleDenominator>
+                      <PolygonSymbolizer>
+                        <Fill>
+                          <CssParameter name="fill">#aaaaaa</CssParameter>
+                        </Fill>
+                        <Stroke>
+                          <CssParameter name="stroke">#000000</CssParameter>
+                          <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                      </PolygonSymbolizer>
+                    </Rule>
+                  </FeatureTypeStyle>
+                </UserStyle>
+              </NamedLayer>
+            </StyledLayerDescriptor>
+          SLD
+          expect(@moose.sld).to match_fuzzy(resulting_sld)
+        end
+        it "returns the layer-name as style-name" do
+          expect(@moose.style_name).to eq(:moose)
+        end
+        it "has an feature-name" do
+          expect(@moose.feature_name).to eq(:moose)
         end
       end
 
