@@ -19,6 +19,11 @@ class SldHelpersTester < GeoserverMigrations::Migration
       polygon_style "MOOSE", display_label: "ELANDEN", max_scale_denominator: 15000
     end
 
+    create_layer :mice do
+      feature_name :mice
+      line_style "MICE", display_label: "MUIZEKES", max_scale_denominator: 21000, stroke_colour: "#80ff00", stroke_width: 8
+    end
+
   end
 
 end

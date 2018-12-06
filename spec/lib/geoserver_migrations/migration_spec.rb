@@ -169,10 +169,10 @@ RSpec.describe GeoserverMigrations::Migration do
         @sld_helper_migration.run
       end
       it "stores two layers" do
-        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :deers, :moose])
+        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :deers, :mice, :moose])
       end
-      it "has added 3 action to take (2 layers and 1 icon)" do
-        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(4)
+      it "has added 5 actions to take (layers and 1 icon)" do
+        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(5)
       end
 
       context "the alt-deers layer" do
@@ -402,6 +402,60 @@ RSpec.describe GeoserverMigrations::Migration do
         end
         it "has an feature-name" do
           expect(@moose.feature_name).to eq(:moose)
+        end
+      end
+
+      context "the mice layer" do
+        before do
+          @moose = @sld_helper_migration.instance_variable_get("@layers_to_create")[:mice]
+        end
+        it "has set layer-name" do
+          expect(@moose.layer_name).to eq(:mice)
+        end
+        it "has set the style-name" do
+          expect(@moose.style_name).to eq(:mice)
+        end
+        it "has set the feature-name" do
+          expect(@moose.style_name).to eq(:mice)
+        end
+        it "has an sld" do
+          resulting_sld = <<-SLD.strip_heredoc
+            <?xml version="1.0" encoding="ISO-8859-1"?>
+            <StyledLayerDescriptor version="1.0.0"
+              xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+              xmlns="http://www.opengis.net/sld"
+              xmlns:ogc="http://www.opengis.net/ogc"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <NamedLayer>
+                <Name>MICE</Name>
+                <UserStyle>
+                  <Name>MICE</Name>
+                  <Title>MICE</Title>
+                  <Abstract>MICE</Abstract>
+                  <FeatureTypeStyle>
+                    <Rule>
+                      <Title>MUIZEKES</Title>
+                      <MaxScaleDenominator>21000</MaxScaleDenominator>
+                      <LineSymbolizer>
+                        <Stroke>
+                          <CssParameter name="stroke">#80ff00</CssParameter>
+                          <CssParameter name="stroke-width">8</CssParameter>
+                        </Stroke>
+                      </LineSymbolizer>
+                    </Rule>
+                  </FeatureTypeStyle>
+                </UserStyle>
+              </NamedLayer>
+            </StyledLayerDescriptor>
+          SLD
+          expect(@moose.sld).to match_fuzzy(resulting_sld)
+        end
+        it "returns the layer-name as style-name" do
+          expect(@moose.style_name).to eq(:mice)
+        end
+        it "has an feature-name" do
+          expect(@moose.feature_name).to eq(:mice)
         end
       end
 

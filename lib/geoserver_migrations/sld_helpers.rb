@@ -154,6 +154,66 @@ module GeoserverMigrations
 
     end
 
+
+    def line_style(title, style_options={})
+      display_label = style_options[:display_label] || title
+      abstract      = style_options[:abstract] || title
+
+      stroke_colour = style_options[:stroke_colour] || "#000000"
+      stroke_width  = style_options[:stroke_width]  || "1"
+
+
+      filter_text = ""
+      if style_options[:filter].present? && style_options[:filter].is_a?(Hash)
+        filter_text = <<-FILTER
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>#{style_options[:filter].keys[0]}</ogc:PropertyName>
+              <ogc:Literal>#{style_options[:filter].values[0]}</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+        FILTER
+      end
+
+      max_scale_text = ""
+      if style_options[:max_scale_denominator].present?
+        max_scale_text = "<MaxScaleDenominator>#{style_options[:max_scale_denominator]}</MaxScaleDenominator>"
+      end
+
+      @options[:sld] = <<-SLD.strip_heredoc
+        <?xml version="1.0" encoding="ISO-8859-1"?>
+        <StyledLayerDescriptor version="1.0.0" 
+         xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+         xmlns="http://www.opengis.net/sld" 
+         xmlns:ogc="http://www.opengis.net/ogc" 
+         xmlns:xlink="http://www.w3.org/1999/xlink" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <NamedLayer>
+            <Name>#{title}</Name>
+            <UserStyle>
+              <Name>#{title}</Name>
+              <Title>#{title}</Title>
+              <Abstract>#{abstract}</Abstract>
+              <FeatureTypeStyle>
+                <Rule>
+                  <Title>#{display_label}</Title>  
+                  #{filter_text}
+                  #{max_scale_text}  
+                  <LineSymbolizer>
+                    <Stroke>
+                      <CssParameter name="stroke">#{stroke_colour}</CssParameter>
+                      <CssParameter name="stroke-width">#{stroke_width}</CssParameter>
+                   </Stroke>
+                  </LineSymbolizer>
+                </Rule>
+              </FeatureTypeStyle>
+            </UserStyle>
+          </NamedLayer>
+        </StyledLayerDescriptor>
+      SLD
+
+    end
+
     # def polygon_style_with_label(title, style_options={})
     #   display_label = icon_style_options[:display_label] || title
     #   abstract      = icon_style_options[:abstract] || title
