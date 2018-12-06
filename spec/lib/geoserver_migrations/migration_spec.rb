@@ -169,10 +169,10 @@ RSpec.describe GeoserverMigrations::Migration do
         @sld_helper_migration.run
       end
       it "stores two layers" do
-        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :deers, :mice, :moose])
+        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :alt_moose, :deers, :mice, :moose])
       end
       it "has added 5 actions to take (layers and 1 icon)" do
-        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(5)
+        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(6)
       end
 
       context "the alt-deers layer" do
@@ -183,7 +183,7 @@ RSpec.describe GeoserverMigrations::Migration do
           expect(@alt_deers.style_name).to eq(:alt_deers)
         end
         it "has set the feature-name" do
-          expect(@alt_deers.style_name).to eq(:alt_deers)
+          expect(@alt_deers.feature_name).to eq(:deers)
         end
         it "has filled the correct sld" do
           sld_with_filter = <<-SLD.strip_heredoc
@@ -270,9 +270,6 @@ RSpec.describe GeoserverMigrations::Migration do
         it "has set the style-name" do
           expect(@deers.style_name).to eq(:deers)
         end
-        it "has set the feature-name" do
-          expect(@deers.style_name).to eq(:deers)
-        end
         it "has an sld" do
           resulting_sld = <<-SLD.strip_heredoc
           <?xml version="1.0" encoding="UTF-8"?>
@@ -341,9 +338,6 @@ RSpec.describe GeoserverMigrations::Migration do
           SLD
           expect(@deers.sld).to match_fuzzy(resulting_sld)
         end
-        it "returns the layer-name as style-name" do
-          expect(@deers.style_name).to eq(:deers)
-        end
         it "has an feature-name" do
           expect(@deers.feature_name).to eq(:deers)
         end
@@ -356,9 +350,6 @@ RSpec.describe GeoserverMigrations::Migration do
           expect(@moose.layer_name).to eq(:moose)
         end
         it "has set the style-name" do
-          expect(@moose.style_name).to eq(:moose)
-        end
-        it "has set the feature-name" do
           expect(@moose.style_name).to eq(:moose)
         end
         it "has an sld" do
@@ -383,6 +374,7 @@ RSpec.describe GeoserverMigrations::Migration do
                       <PolygonSymbolizer>
                         <Fill>
                           <CssParameter name="fill">#aaaaaa</CssParameter>
+                          <CssParameter name="opacity">1</CssParameter>
                         </Fill>
                         <Stroke>
                           <CssParameter name="stroke">#000000</CssParameter>
@@ -397,11 +389,60 @@ RSpec.describe GeoserverMigrations::Migration do
           SLD
           expect(@moose.sld).to match_fuzzy(resulting_sld)
         end
-        it "returns the layer-name as style-name" do
-          expect(@moose.style_name).to eq(:moose)
-        end
         it "has an feature-name" do
           expect(@moose.feature_name).to eq(:moose)
+        end
+      end
+
+      context "the alt-moose layer" do
+        before do
+          @moose = @sld_helper_migration.instance_variable_get("@layers_to_create")[:alt_moose]
+        end
+        it "has set layer-name" do
+          expect(@moose.layer_name).to eq(:alt_moose)
+        end
+        it "has set the style-name" do
+          expect(@moose.style_name).to eq(:alt_moose)
+        end
+        it "has set the feature-name" do
+          expect(@moose.feature_name).to eq(:moose)
+        end
+        it "has an sld" do
+          resulting_sld = <<-SLD.strip_heredoc
+            <?xml version="1.0" encoding="ISO-8859-1"?>
+            <StyledLayerDescriptor version="1.0.0"
+              xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+              xmlns="http://www.opengis.net/sld"
+              xmlns:ogc="http://www.opengis.net/ogc"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <NamedLayer>
+                <Name>ALT MOOSE</Name>
+                <UserStyle>
+                  <Name>ALT MOOSE</Name>
+                  <Title>ALT MOOSE</Title>
+                  <Abstract>ALT MOOSE</Abstract>
+                  <FeatureTypeStyle>
+                    <Rule>
+                      <Title>DOORZICHTIGE ELANDEN</Title>
+                      <MaxScaleDenominator>15000</MaxScaleDenominator>
+                      <PolygonSymbolizer>
+                        <Fill>
+                          <CssParameter name="fill">#aaaaaa</CssParameter>
+                          <CssParameter name="opacity">0.4</CssParameter>
+                        </Fill>
+                        <Stroke>
+                          <CssParameter name="stroke">#000000</CssParameter>
+                          <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                      </PolygonSymbolizer>
+                    </Rule>
+                  </FeatureTypeStyle>
+                </UserStyle>
+              </NamedLayer>
+            </StyledLayerDescriptor>
+          SLD
+          expect(@moose.sld).to match_fuzzy(resulting_sld)
         end
       end
 
@@ -415,8 +456,8 @@ RSpec.describe GeoserverMigrations::Migration do
         it "has set the style-name" do
           expect(@moose.style_name).to eq(:mice)
         end
-        it "has set the feature-name" do
-          expect(@moose.style_name).to eq(:mice)
+        it "has an feature-name" do
+          expect(@moose.feature_name).to eq(:mice)
         end
         it "has an sld" do
           resulting_sld = <<-SLD.strip_heredoc
@@ -450,12 +491,6 @@ RSpec.describe GeoserverMigrations::Migration do
             </StyledLayerDescriptor>
           SLD
           expect(@moose.sld).to match_fuzzy(resulting_sld)
-        end
-        it "returns the layer-name as style-name" do
-          expect(@moose.style_name).to eq(:mice)
-        end
-        it "has an feature-name" do
-          expect(@moose.feature_name).to eq(:mice)
         end
       end
 

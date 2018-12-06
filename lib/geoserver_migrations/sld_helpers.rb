@@ -96,9 +96,9 @@ module GeoserverMigrations
       abstract      = style_options[:abstract] || title
 
       fill_colour   = style_options[:fill_colour]   || "#aaaaaa"
+      fill_opacity  = style_options[:fill_opacity]  || "1"
       stroke_colour = style_options[:stroke_colour] || "#000000"
       stroke_width  = style_options[:stroke_width]  || "1"
-
 
       filter_text = ""
       if style_options[:filter].present? && style_options[:filter].is_a?(Hash)
@@ -139,6 +139,7 @@ module GeoserverMigrations
                   <PolygonSymbolizer>
                     <Fill>
                       <CssParameter name="fill">#{fill_colour}</CssParameter>
+                      <CssParameter name="opacity">#{fill_opacity}</CssParameter>
                     </Fill>
                     <Stroke>
                       <CssParameter name="stroke">#{stroke_colour}</CssParameter>
