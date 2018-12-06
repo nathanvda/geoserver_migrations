@@ -169,10 +169,10 @@ RSpec.describe GeoserverMigrations::Migration do
         @sld_helper_migration.run
       end
       it "stores two layers" do
-        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :alt_moose, :deers, :mice, :moose])
+        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :alt_moose, :deers, :mice, :moose, :toads])
       end
       it "has added 5 actions to take (layers and 1 icon)" do
-        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(6)
+        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(7)
       end
 
       context "the alt-deers layer" do
@@ -354,7 +354,7 @@ RSpec.describe GeoserverMigrations::Migration do
         end
         it "has an sld" do
           resulting_sld = <<-SLD.strip_heredoc
-            <?xml version="1.0" encoding="ISO-8859-1"?>
+            <?xml version="1.0" encoding="UTF-8"?>
             <StyledLayerDescriptor version="1.0.0"
               xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
               xmlns="http://www.opengis.net/sld"
@@ -374,7 +374,6 @@ RSpec.describe GeoserverMigrations::Migration do
                       <PolygonSymbolizer>
                         <Fill>
                           <CssParameter name="fill">#aaaaaa</CssParameter>
-                          <CssParameter name="opacity">1</CssParameter>
                         </Fill>
                         <Stroke>
                           <CssParameter name="stroke">#000000</CssParameter>
@@ -409,7 +408,7 @@ RSpec.describe GeoserverMigrations::Migration do
         end
         it "has an sld" do
           resulting_sld = <<-SLD.strip_heredoc
-            <?xml version="1.0" encoding="ISO-8859-1"?>
+            <?xml version="1.0" encoding="UTF-8"?>
             <StyledLayerDescriptor version="1.0.0"
               xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
               xmlns="http://www.opengis.net/sld"
@@ -448,20 +447,20 @@ RSpec.describe GeoserverMigrations::Migration do
 
       context "the mice layer" do
         before do
-          @moose = @sld_helper_migration.instance_variable_get("@layers_to_create")[:mice]
+          @mice = @sld_helper_migration.instance_variable_get("@layers_to_create")[:mice]
         end
         it "has set layer-name" do
-          expect(@moose.layer_name).to eq(:mice)
+          expect(@mice.layer_name).to eq(:mice)
         end
         it "has set the style-name" do
-          expect(@moose.style_name).to eq(:mice)
+          expect(@mice.style_name).to eq(:mice)
         end
         it "has an feature-name" do
-          expect(@moose.feature_name).to eq(:mice)
+          expect(@mice.feature_name).to eq(:mice)
         end
         it "has an sld" do
           resulting_sld = <<-SLD.strip_heredoc
-            <?xml version="1.0" encoding="ISO-8859-1"?>
+            <?xml version="1.0" encoding="UTF-8"?>
             <StyledLayerDescriptor version="1.0.0"
               xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
               xmlns="http://www.opengis.net/sld"
@@ -490,7 +489,58 @@ RSpec.describe GeoserverMigrations::Migration do
               </NamedLayer>
             </StyledLayerDescriptor>
           SLD
-          expect(@moose.sld).to match_fuzzy(resulting_sld)
+          expect(@mice.sld).to match_fuzzy(resulting_sld)
+        end
+      end
+      
+      context "the toads layer" do
+        before do
+          @toads = @sld_helper_migration.instance_variable_get("@layers_to_create")[:toads]
+        end
+        it "has set layer-name" do
+          expect(@toads.layer_name).to eq(:toads)
+        end
+        it "has set the style-name" do
+          expect(@toads.style_name).to eq(:toads)
+        end
+        it "has an feature-name" do
+          expect(@toads.feature_name).to eq(:toads)
+        end
+        it "has an sld" do
+          resulting_sld = <<-SLD.strip_heredoc
+            <?xml version="1.0" encoding="UTF-8"?>
+            <StyledLayerDescriptor version="1.0.0"
+              xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+              xmlns="http://www.opengis.net/sld"
+              xmlns:ogc="http://www.opengis.net/ogc"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <NamedLayer>
+                <Name>Toads</Name>
+                <UserStyle>
+                  <Name>Toads</Name>
+                  <Title>Toads</Title>
+                  <Abstract>Toads</Abstract>
+                  <FeatureTypeStyle>
+                    <Rule>
+                      <Title>Padden</Title>
+                      <MaxScaleDenominator>25000</MaxScaleDenominator>
+                      <PolygonSymbolizer>
+                        <Stroke>
+                          <CssParameter name="stroke">#00ff00</CssParameter>
+                          <CssParameter name="stroke-width">4</CssParameter>
+                          <CssParameter name="stroke-dasharray">
+                            <ogc:Literal>10.0 10.0</ogc:Literal>
+                          </CssParameter>
+                        </Stroke>
+                      </PolygonSymbolizer>
+                    </Rule>
+                  </FeatureTypeStyle>
+                </UserStyle>
+              </NamedLayer>
+            </StyledLayerDescriptor>
+          SLD
+          expect(@toads.sld).to match_fuzzy(resulting_sld)
         end
       end
 

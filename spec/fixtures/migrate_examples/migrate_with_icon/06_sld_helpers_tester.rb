@@ -29,6 +29,11 @@ class SldHelpersTester < GeoserverMigrations::Migration
       line_style "MICE", display_label: "MUIZEKES", max_scale_denominator: 21000, stroke_colour: "#80ff00", stroke_width: 8
     end
 
+    create_layer :toads do
+      feature_name :toads
+      polygon_style "Toads", display_label: "Padden", max_scale_denominator: 25000, no_fill: true, stroke_colour: "#00ff00", stroke_width: 4, stroke_dasharray: "10.0 10.0"
+    end
+
   end
 
 end

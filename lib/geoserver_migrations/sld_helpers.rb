@@ -112,13 +112,36 @@ module GeoserverMigrations
         FILTER
       end
 
+      fill_style = ""
+      unless style_options[:no_fill] == true
+        fill_styles = ["<Fill>"]
+        fill_styles << "                      <CssParameter name=\"fill\">#{fill_colour}</CssParameter>"
+        fill_styles << "                      <CssParameter name=\"opacity\">#{fill_opacity}</CssParameter>" if style_options[:fill_opacity].present?
+        fill_styles << "                    </Fill>"
+        fill_style = fill_styles.join("\n")
+      end
+
+
+      stroke_styles = []
+      stroke_styles << "<Stroke>"
+      stroke_styles << "                      <CssParameter name=\"stroke\">#{stroke_colour}</CssParameter>"
+      stroke_styles << "                      <CssParameter name=\"stroke-width\">#{stroke_width}</CssParameter>"
+
+      if style_options[:stroke_dasharray].present?
+        stroke_styles << "                      <CssParameter name=\"stroke-dasharray\">"
+        stroke_styles << "                           <ogc:Literal>#{style_options[:stroke_dasharray]}</ogc:Literal>"
+        stroke_styles << "                      </CssParameter>"
+      end
+      stroke_styles << "                    </Stroke>"
+      stroke_style = stroke_styles.join("\n")
+
       max_scale_text = ""
       if style_options[:max_scale_denominator].present?
         max_scale_text = "<MaxScaleDenominator>#{style_options[:max_scale_denominator]}</MaxScaleDenominator>"
       end
 
       @options[:sld] = <<-SLD.strip_heredoc
-        <?xml version="1.0" encoding="ISO-8859-1"?>
+        <?xml version="1.0" encoding="UTF-8"?>
         <StyledLayerDescriptor version="1.0.0" 
          xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
          xmlns="http://www.opengis.net/sld" 
@@ -136,15 +159,9 @@ module GeoserverMigrations
                   <Title>#{display_label}</Title>  
                   #{filter_text}
                   #{max_scale_text}  
-                  <PolygonSymbolizer>
-                    <Fill>
-                      <CssParameter name="fill">#{fill_colour}</CssParameter>
-                      <CssParameter name="opacity">#{fill_opacity}</CssParameter>
-                    </Fill>
-                    <Stroke>
-                      <CssParameter name="stroke">#{stroke_colour}</CssParameter>
-                      <CssParameter name="stroke-width">#{stroke_width}</CssParameter>
-                    </Stroke>
+                  <PolygonSymbolizer>   
+                    #{fill_style}
+                    #{stroke_style}
                   </PolygonSymbolizer>
                 </Rule>
               </FeatureTypeStyle>
@@ -182,7 +199,7 @@ module GeoserverMigrations
       end
 
       @options[:sld] = <<-SLD.strip_heredoc
-        <?xml version="1.0" encoding="ISO-8859-1"?>
+        <?xml version="1.0" encoding="UTF-8"?>
         <StyledLayerDescriptor version="1.0.0" 
          xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
          xmlns="http://www.opengis.net/sld" 
