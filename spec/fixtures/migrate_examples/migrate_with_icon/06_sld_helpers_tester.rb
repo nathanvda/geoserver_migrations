@@ -34,6 +34,12 @@ class SldHelpersTester < GeoserverMigrations::Migration
       polygon_style "Toads", display_label: "Padden", max_scale_denominator: 25000, no_fill: true, stroke_colour: "#00ff00", stroke_width: 4, stroke_dasharray: "10.0 10.0"
     end
 
+    
+    create_layer :blackbirds do
+      feature_name :blackbirds
+      line_style "Blackbirds", display_label: "Raven", stroke_colour: "#00ff00", stroke_width: 3, filter: {"label" => "BLACK", "active" => "TRUE"}
+    end
+
   end
 
 end

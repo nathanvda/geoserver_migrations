@@ -1,20 +1,50 @@
 module GeoserverMigrations
   module SldHelpers
 
+
+    def build_sld_filter(filter_hash)
+      filter_text = ""
+      filters_count = filter_hash.keys.count
+      if filters_count > 0
+        if filters_count == 1
+          filter_text = <<-FILTER
+            <ogc:Filter>
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>#{filter_hash.keys[0]}</ogc:PropertyName>
+                <ogc:Literal>#{filter_hash.values[0]}</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+          FILTER
+        elsif filters_count == 2
+          filter_text = <<-FILTER
+            <ogc:Filter>
+              <ogc:And>
+                <ogc:PropertyIsEqualTo>
+                  <ogc:PropertyName>#{filter_hash.keys[0]}</ogc:PropertyName>
+                  <ogc:Literal>#{filter_hash.values[0]}</ogc:Literal>
+                </ogc:PropertyIsEqualTo>
+                <ogc:PropertyIsEqualTo>
+                  <ogc:PropertyName>#{filter_hash.keys[1]}</ogc:PropertyName>
+                  <ogc:Literal>#{filter_hash.values[1]}</ogc:Literal>
+                </ogc:PropertyIsEqualTo>
+              </ogc:And>  
+            </ogc:Filter>
+          FILTER
+        else
+          raise StandardError.new("Unsupported filter! For now we only support 1 or 2 filter-values :( :(")
+        end
+      end
+      filter_text
+    end
+
+
     def icon_style_with_label(title, icon_name, icon_style_options={})
       display_label = icon_style_options[:display_label] || title
       abstract      = icon_style_options[:abstract] || title
 
       filter_text = ""
       if icon_style_options[:filter].present? && icon_style_options[:filter].is_a?(Hash)
-        filter_text = <<-FILTER
-          <ogc:Filter>
-            <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>#{icon_style_options[:filter].keys[0]}</ogc:PropertyName>
-              <ogc:Literal>#{icon_style_options[:filter].values[0]}</ogc:Literal>
-            </ogc:PropertyIsEqualTo>
-          </ogc:Filter>
-        FILTER
+        filter_text = build_sld_filter(icon_style_options[:filter])
       end
 
       max_scale_text = ""
@@ -102,14 +132,7 @@ module GeoserverMigrations
 
       filter_text = ""
       if style_options[:filter].present? && style_options[:filter].is_a?(Hash)
-        filter_text = <<-FILTER
-          <ogc:Filter>
-            <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>#{style_options[:filter].keys[0]}</ogc:PropertyName>
-              <ogc:Literal>#{style_options[:filter].values[0]}</ogc:Literal>
-            </ogc:PropertyIsEqualTo>
-          </ogc:Filter>
-        FILTER
+        filter_text = build_sld_filter(style_options[:filter])
       end
 
       fill_style = ""
@@ -183,14 +206,7 @@ module GeoserverMigrations
 
       filter_text = ""
       if style_options[:filter].present? && style_options[:filter].is_a?(Hash)
-        filter_text = <<-FILTER
-          <ogc:Filter>
-            <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>#{style_options[:filter].keys[0]}</ogc:PropertyName>
-              <ogc:Literal>#{style_options[:filter].values[0]}</ogc:Literal>
-            </ogc:PropertyIsEqualTo>
-          </ogc:Filter>
-        FILTER
+        filter_text = build_sld_filter(style_options[:filter])
       end
 
       max_scale_text = ""

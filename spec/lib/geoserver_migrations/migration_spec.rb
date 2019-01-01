@@ -169,10 +169,10 @@ RSpec.describe GeoserverMigrations::Migration do
         @sld_helper_migration.run
       end
       it "stores two layers" do
-        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :alt_moose, :deers, :mice, :moose, :toads])
+        expect(@sld_helper_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:alt_deers, :alt_moose, :blackbirds, :deers, :mice, :moose, :toads])
       end
       it "has added 5 actions to take (layers and 1 icon)" do
-        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(7)
+        expect(@sld_helper_migration.instance_variable_get('@ordered_actions_to_take').count).to eq(8)
       end
 
       context "the alt-deers layer" do
@@ -544,8 +544,66 @@ RSpec.describe GeoserverMigrations::Migration do
         end
       end
 
+      context "the blackbirds layer" do
+        before do
+          @blackbirds = @sld_helper_migration.instance_variable_get("@layers_to_create")[:blackbirds]
+        end
+        it "has set layer-name" do
+          expect(@blackbirds.layer_name).to eq(:blackbirds)
+        end
+        it "has set the style-name" do
+          expect(@blackbirds.style_name).to eq(:blackbirds)
+        end
+        it "has an feature-name" do
+          expect(@blackbirds.feature_name).to eq(:blackbirds)
+        end
+        it "has an sld" do
+          resulting_sld = <<-SLD.strip_heredoc
+            <?xml version="1.0" encoding="UTF-8"?>
+            <StyledLayerDescriptor version="1.0.0"
+              xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+              xmlns="http://www.opengis.net/sld"
+              xmlns:ogc="http://www.opengis.net/ogc"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <NamedLayer>
+                <Name>Blackbirds</Name>
+                <UserStyle>
+                  <Name>Blackbirds</Name>
+                  <Title>Blackbirds</Title>
+                  <Abstract>Blackbirds</Abstract>
+                  <FeatureTypeStyle>
+                    <Rule>
+                      <Title>Raven</Title> 
+                      <ogc:Filter>
+                        <ogc:And>
+                          <ogc:PropertyIsEqualTo>
+                            <ogc:PropertyName>label</ogc:PropertyName>
+                            <ogc:Literal>BLACK</ogc:Literal>
+                          </ogc:PropertyIsEqualTo>
+                          <ogc:PropertyIsEqualTo>
+                            <ogc:PropertyName>active</ogc:PropertyName>
+                            <ogc:Literal>TRUE</ogc:Literal>
+                          </ogc:PropertyIsEqualTo>
+                        </ogc:And>  
+                      </ogc:Filter>
+                      <LineSymbolizer>
+                        <Stroke>
+                          <CssParameter name="stroke">#00ff00</CssParameter>
+                          <CssParameter name="stroke-width">3</CssParameter>
+                        </Stroke>
+                      </LineSymbolizer>
+                    </Rule>
+                  </FeatureTypeStyle>
+                </UserStyle>
+              </NamedLayer>
+            </StyledLayerDescriptor>
+          SLD
+          expect(@blackbirds.sld).to match_fuzzy(resulting_sld)
+        end
+      end
+
     end
   end
-
 
 end
