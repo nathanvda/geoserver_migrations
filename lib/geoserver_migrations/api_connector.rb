@@ -40,14 +40,15 @@ module GeoserverMigrations
               GeoserverClient.create_featuretype layer_name, native_name: layer_config.feature_name
               GeoserverClient.set_layer_style layer_name, layer_config.style_name
             else
+              puts " -- delete layer #{layer_config.layer_name}"
+              GeoserverClient.delete_featuretype layer_name
+
               if !layer_config.sld.nil?
                 puts " -- delete style #{layer_config.style_name}"
 
                 GeoserverClient.delete_style layer_config.style_name
               end
 
-              puts " -- delete layer #{layer_config.layer_name}"
-              GeoserverClient.delete_featuretype layer_name
             end
           when :delete_layer
             if direction == :up
