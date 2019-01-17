@@ -16,6 +16,10 @@ module GeoserverMigrations
     end
 
     def execute(ordered_actions, direction = :up, options={})
+      if direction != :up
+        ordered_actions = ordered_actions.reverse
+      end
+
       ordered_actions.each do |action_to_complete|
         case action_to_complete[:action]
           when :add_resource
