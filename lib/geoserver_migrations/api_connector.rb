@@ -90,7 +90,18 @@ module GeoserverMigrations
             if direction == :up
               layer_name = action_to_complete[:params][:name]
               puts " -- Delete layergroup #{layer_name}"
-              GeoserverClient.delete_layergroup layer_name
+
+              # one would assume that geoserver would throw a clean 404 when  a layergroup does not exist
+              # but apparently this is not the case.
+              # If we manually check for the existence of the layergroup (verify if it exists), and skip the
+              # deletion if it does not it works as expected :)
+              
+              begin
+                puts GeoserverClient.get_layergroup layer_name
+                puts GeoserverClient.delete_layergroup layer_name
+              rescue => e
+                puts "Layergroup #{layer_name} does not exist!"
+              end
             else
               # do nothing??
               # we should save the layer-definition in the :up direction so we can
