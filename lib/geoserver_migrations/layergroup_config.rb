@@ -17,7 +17,8 @@ module GeoserverMigrations
     end
 
     def layers(*received_layers)
-      if received_layers.nil?
+      if received_layers.size == 0
+        puts "Return current setting ..."
         @options[:layers]
       else
         if received_layers.is_a? String

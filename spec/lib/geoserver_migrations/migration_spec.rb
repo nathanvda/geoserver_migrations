@@ -635,8 +635,11 @@ RSpec.describe GeoserverMigrations::Migration do
           it "has set options" do
             expect(@masterdata.options.inspect).to eq("{:layer_name=>:masterdata, :is_update_style=>false, :layers=>[\"sabic:pipelines\", \"sabic:cables\"]}")
           end
-          it "has an sld" do
+          it "has a name" do
             expect(@masterdata.layer_name).to eq(:masterdata)
+          end
+          it "has layers" do
+            expect(@masterdata.layers).to eq(["sabic:pipelines", "sabic:cables"])
           end
         end
         context "the masterdata_alt layer" do
