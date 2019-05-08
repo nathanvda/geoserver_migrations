@@ -5,6 +5,7 @@ require 'geoserver_migrations/base'
 require 'geoserver_migrations/test_connector'
 require 'geoserver_migrations/api_connector'
 require 'geoserver_migrations/layer_config'
+require 'geoserver_migrations/layergroup_config'
 
 
 module GeoserverMigrations

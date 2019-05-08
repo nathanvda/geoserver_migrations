@@ -77,7 +77,27 @@ module GeoserverMigrations
               puts " -- Updating style #{style_name}"
               GeoserverClient.update_style style_name, sld: layer_config.sld
             end
-        end
+          when :create_layergroup
+            layer_name = action_to_complete[:params][:name]
+            layer_config = action_to_complete[:params][:layer_config]
+            if direction == :up
+              GeoserverClient.create_layergroup layer_name, layer_config.layers
+            else
+              puts " -- delete layergroup #{layer_config.layer_name}"
+              GeoserverClient.delete_layergroup layer_name
+            end
+          when :delete_layergroup
+            if direction == :up
+              layer_name = action_to_complete[:params][:name]
+              puts " -- Delete layergroup #{layer_name}"
+              GeoserverClient.delete_layergroup layer_name
+            else
+              # do nothing??
+              # we should save the layer-definition in the :up direction so we can
+              # restore it if needed?
+            end
+
+         end
       end
     end
 

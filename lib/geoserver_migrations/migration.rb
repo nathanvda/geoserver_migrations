@@ -56,6 +56,15 @@ module GeoserverMigrations
       end
     end
 
+    def create_layergroup(layer_name, &block)
+      layergroup_config = GeoserverMigrations::LayergroupConfig.new(layer_name)
+      layergroup_config.instance_eval(&block) if block_given?
+      if layergroup_config.valid?
+        @layers_to_create[layer_name] = layergroup_config
+        @ordered_actions_to_take << {action: :create_layergroup, params: {name: layer_name, layer_config: layergroup_config}}
+      end
+    end
+
     def update_style(layer_name, &block)
       layer_config = GeoserverMigrations::LayerConfig.new(layer_name, true)
       layer_config.instance_eval(&block) if block_given?
@@ -67,6 +76,11 @@ module GeoserverMigrations
     def delete_layer(layer_name)
       @layers_to_delete << layer_name
       @ordered_actions_to_take << {action: :delete_layer, params: {name: layer_name }}
+    end
+
+    def delete_layergroup(layer_name)
+      @layers_to_delete << layer_name
+      @ordered_actions_to_take << {action: :delete_layergroup, params: {name: layer_name }}
     end
 
     def delete_style(style_name)
@@ -97,7 +111,6 @@ module GeoserverMigrations
       result
     end
 
-    
 
   end
 end

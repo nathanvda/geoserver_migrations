@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'fixtures/migrate_examples/migrate_1/01_first_migration'
 require 'fixtures/migrate_examples/migrate_with_icon/05_add_icon'
 require 'fixtures/migrate_examples/migrate_with_icon/06_sld_helpers_tester'
+require 'fixtures/migrate_examples/migrate_with_icon/07_add_a_layergroup'
 
 RSpec.describe GeoserverMigrations::Migration do
 
@@ -603,7 +604,58 @@ RSpec.describe GeoserverMigrations::Migration do
         end
       end
 
+
     end
   end
+
+
+  context "adding layer-groups" do
+    context "initialise the migration/runner" do
+      before do
+        @test_connector = GeoserverMigrations::TestConnector.new
+        GeoserverMigrations::Base.connection = @test_connector
+        @layergroup_migration = AddALayergroup.new
+      end
+      it "test-prepararion has correctly set the base connector" do
+        expect(GeoserverMigrations::Base.connection.class.name).to eq("GeoserverMigrations::TestConnector")
+      end
+
+      context "run it" do
+        before do
+          @layergroup_migration.migrate
+        end
+        it "has collected the layer-group's name" do
+          expect(@test_connector.collected_actions[:up].map{|x| x[:params][:name]}.sort).to eq([:masterdata, :masterdata_alt])
+        end
+
+        context "the masterdata layer" do
+          before do
+            @masterdata = @layergroup_migration.instance_variable_get("@layers_to_create")[:masterdata]
+          end
+          it "has set options" do
+            expect(@masterdata.options.inspect).to eq("{:layer_name=>:masterdata, :is_update_style=>false, :layers=>[\"sabic:pipelines\", \"sabic:cables\"]}")
+          end
+          it "has an sld" do
+            expect(@masterdata.layer_name).to eq(:masterdata)
+          end
+        end
+        context "the masterdata_alt layer" do
+          before do
+            @masterdata_alt = @layergroup_migration.instance_variable_get("@layers_to_create")[:masterdata_alt]
+          end
+          it "has set options" do
+            expect(@masterdata_alt.options.inspect).to eq("{:layer_name=>:masterdata_alt, :is_update_style=>false, :layers=>[\"sabic:pipelines-alt\", \"sabic:cables-alt\"]}")
+          end
+          it "has an sld" do
+            expect(@masterdata_alt.layer_name).to eq(:masterdata_alt)
+          end
+        end
+        it "stores the layers to create" do
+          expect(@layergroup_migration.instance_variable_get("@layers_to_create").keys.sort).to eq([:masterdata, :masterdata_alt])
+        end
+      end
+    end
+  end
+
 
 end
