@@ -146,16 +146,18 @@ module GeoserverMigrations
 
 
       stroke_styles = []
-      stroke_styles << "<Stroke>"
-      stroke_styles << "                      <CssParameter name=\"stroke\">#{stroke_colour}</CssParameter>"
-      stroke_styles << "                      <CssParameter name=\"stroke-width\">#{stroke_width}</CssParameter>"
+      unless style_options[:no_stroke] == true
+        stroke_styles << "<Stroke>"
+        stroke_styles << "                      <CssParameter name=\"stroke\">#{stroke_colour}</CssParameter>"
+        stroke_styles << "                      <CssParameter name=\"stroke-width\">#{stroke_width}</CssParameter>"
 
-      if style_options[:stroke_dasharray].present?
-        stroke_styles << "                      <CssParameter name=\"stroke-dasharray\">"
-        stroke_styles << "                           <ogc:Literal>#{style_options[:stroke_dasharray]}</ogc:Literal>"
-        stroke_styles << "                      </CssParameter>"
+        if style_options[:stroke_dasharray].present?
+          stroke_styles << "                      <CssParameter name=\"stroke-dasharray\">"
+          stroke_styles << "                           <ogc:Literal>#{style_options[:stroke_dasharray]}</ogc:Literal>"
+          stroke_styles << "                      </CssParameter>"
+        end
+        stroke_styles << "                    </Stroke>"
       end
-      stroke_styles << "                    </Stroke>"
       stroke_style = stroke_styles.join("\n")
 
       max_scale_text = ""
