@@ -125,10 +125,11 @@ module GeoserverMigrations
       display_label = style_options[:display_label] || title
       abstract      = style_options[:abstract] || title
 
-      fill_colour   = style_options[:fill_colour]   || "#aaaaaa"
-      fill_opacity  = style_options[:fill_opacity]  || "1"
-      stroke_colour = style_options[:stroke_colour] || "#000000"
-      stroke_width  = style_options[:stroke_width]  || "1"
+      fill_colour    = style_options[:fill_colour]    || "#aaaaaa"
+      fill_opacity   = style_options[:fill_opacity]   || "1"
+      stroke_colour  = style_options[:stroke_colour]  || "#000000"
+      stroke_width   = style_options[:stroke_width]   || "1"
+      stroke_opacity = style_options[:stroke_opacity] || "1"
 
       filter_text = ""
       if style_options[:filter].present? && style_options[:filter].is_a?(Hash)
@@ -150,6 +151,7 @@ module GeoserverMigrations
         stroke_styles << "<Stroke>"
         stroke_styles << "                      <CssParameter name=\"stroke\">#{stroke_colour}</CssParameter>"
         stroke_styles << "                      <CssParameter name=\"stroke-width\">#{stroke_width}</CssParameter>"
+        stroke_styles << "                      <CssParameter name=\"stroke-opacity\">#{stroke_opacity}</CssParameter>"
 
         if style_options[:stroke_dasharray].present?
           stroke_styles << "                      <CssParameter name=\"stroke-dasharray\">"
@@ -202,9 +204,9 @@ module GeoserverMigrations
       display_label = style_options[:display_label] || title
       abstract      = style_options[:abstract] || title
 
-      stroke_colour = style_options[:stroke_colour] || "#000000"
-      stroke_width  = style_options[:stroke_width]  || "1"
-
+      stroke_colour  = style_options[:stroke_colour]  || "#000000"
+      stroke_width   = style_options[:stroke_width]   || "1"
+      stroke_opacity = style_options[:stroke_opacity] || "1"
 
       filter_text = ""
       if style_options[:filter].present? && style_options[:filter].is_a?(Hash)
@@ -239,6 +241,7 @@ module GeoserverMigrations
                     <Stroke>
                       <CssParameter name="stroke">#{stroke_colour}</CssParameter>
                       <CssParameter name="stroke-width">#{stroke_width}</CssParameter>
+                      <CssParameter name="stroke-opacity">#{stroke_opacity}</CssParameter>
                    </Stroke>
                   </LineSymbolizer>
                 </Rule>

@@ -379,6 +379,7 @@ RSpec.describe GeoserverMigrations::Migration do
                         <Stroke>
                           <CssParameter name="stroke">#000000</CssParameter>
                           <CssParameter name="stroke-width">1</CssParameter>
+                          <CssParameter name="stroke-opacity">1</CssParameter>
                         </Stroke>
                       </PolygonSymbolizer>
                     </Rule>
@@ -433,7 +434,8 @@ RSpec.describe GeoserverMigrations::Migration do
                         </Fill>
                         <Stroke>
                           <CssParameter name="stroke">#000000</CssParameter>
-                          <CssParameter name="stroke-width">1</CssParameter>
+                          <CssParameter name="stroke-width">1</CssParameter> 
+                          <CssParameter name="stroke-opacity">1</CssParameter>
                         </Stroke>
                       </PolygonSymbolizer>
                     </Rule>
@@ -482,6 +484,7 @@ RSpec.describe GeoserverMigrations::Migration do
                         <Stroke>
                           <CssParameter name="stroke">#80ff00</CssParameter>
                           <CssParameter name="stroke-width">8</CssParameter>
+                          <CssParameter name="stroke-opacity">0.8</CssParameter>
                         </Stroke>
                       </LineSymbolizer>
                     </Rule>
@@ -530,6 +533,7 @@ RSpec.describe GeoserverMigrations::Migration do
                         <Stroke>
                           <CssParameter name="stroke">#00ff00</CssParameter>
                           <CssParameter name="stroke-width">4</CssParameter>
+                          <CssParameter name="stroke-opacity">1</CssParameter>
                           <CssParameter name="stroke-dasharray">
                             <ogc:Literal>10.0 10.0</ogc:Literal>
                           </CssParameter>
@@ -592,6 +596,7 @@ RSpec.describe GeoserverMigrations::Migration do
                         <Stroke>
                           <CssParameter name="stroke">#00ff00</CssParameter>
                           <CssParameter name="stroke-width">3</CssParameter>
+                          <CssParameter name="stroke-opacity">1</CssParameter>
                         </Stroke>
                       </LineSymbolizer>
                     </Rule>
